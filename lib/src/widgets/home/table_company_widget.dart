@@ -1,69 +1,82 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/src/configs/talker_config.dart';
+import 'package:my_app/src/models/home/response/top_company_floor_response.dart';
 import 'package:my_app/src/screens/company/company_screen.dart';
 
 class TableCompanyWidget extends StatelessWidget {
-  const TableCompanyWidget({super.key});
+  final List<TopCompanyFloorResponse> companies;
+
+  const TableCompanyWidget({super.key, required this.companies});
 
   @override
   Widget build(BuildContext context) {
-    return Table(
-      columnWidths: const {
-        0: FixedColumnWidth(35),
-        1: FixedColumnWidth(40),
-        2: FlexColumnWidth(),
-        3: FixedColumnWidth(70),
-      },
-      children: [
-        _buildTableRow(["STT", "Mã", "Tên công ty", "Theo dõi"], isHeader: true, context: context),
-        _buildTableRow(["1", "AAA", "Ngân hàng thương mại Á Châu", true], rowIndex: 1, context: context),
-        _buildTableRow(["2", "VCB", "Ngân hàng thương mại Việt Nam", false], rowIndex: 2, context: context),
-        _buildTableRow(["3", "VPB", "Ngân hàng thịnh vượng", false], rowIndex: 3, context: context),
-        _buildTableRow(["4", "BBB", "Công ty cổ phần DDD", false], rowIndex: 4, context: context),
-        _buildTableRow(["5", "BBB", "Công ty cổ phần EEE", false], rowIndex: 5, context: context),
-        _buildTableRow(["6", "BBB", "Công ty cổ phần BBB", false], rowIndex: 6, context: context),
-        _buildTableRow(["7", "BBB", "Công ty cổ phần BBB", false], rowIndex: 7, context: context),
-        _buildTableRow(["8", "BBB", "Công ty cổ phần BBB", false], rowIndex: 8, context: context),
-        _buildTableRow(["9", "BBB", "Công ty cổ phần BBB", false], rowIndex: 9, context: context),
-        _buildTableRow(["10", "BBB", "Công ty cổ phần BBB", false], rowIndex: 10, context: context),
-      ],
+    return SingleChildScrollView(
+      child: Table(
+        border: TableBorder.all(color: Colors.grey[300]!),
+        columnWidths: {
+          0: FixedColumnWidth(MediaQuery.of(context).size.width * 0.1),
+          1: FixedColumnWidth(MediaQuery.of(context).size.width * 0.3),
+          2: FlexColumnWidth(),
+          3: FixedColumnWidth(MediaQuery.of(context).size.width * 0.2),
+        },
+        children: [
+          _buildTableRow(['STT', 'Mã CK', 'KL Mua ròng', 'Giá'], isHeader: true, context: context),
+          ...companies.asMap().entries.map((entry) {
+            int index = entry.key + 1;
+            final company = entry.value;
+            return _buildTableRow(
+              [
+                index.toString(),
+                company.symbol,
+                company.volume.toString(),
+                company.ceilPrice.toStringAsFixed(2),
+              ],
+              rowIndex: index,
+              context: context,
+              company: company,
+            );
+          }),
+        ],
+      ),
     );
   }
 
-  TableRow _buildTableRow(List<dynamic> cells, {bool isHeader = false, int rowIndex = 0, required BuildContext context}) {
+  TableRow _buildTableRow(
+    List<String> cells, {
+    bool isHeader = false,
+    int rowIndex = 0,
+    required BuildContext context,
+    TopCompanyFloorResponse? company,
+  }) {
     return TableRow(
       decoration: BoxDecoration(
-        color: isHeader ? Colors.blue : (rowIndex % 2 == 0 ? Colors.blue[200] : Colors.white),
+        color: isHeader ? Colors.blue[200] : (rowIndex % 2 == 0 ? Colors.blue[50] : Colors.white),
       ),
-      children: cells.asMap().entries.map((entry) {
-        int index = entry.key;
-        var cell = entry.value;
-
+      children: cells.map((cell) {
         return GestureDetector(
-          onTap: isHeader
+          onTap: isHeader || company == null
               ? null
               : () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => CompanyScreen(),
+                      builder: (_) => CompanyScreen(
+                        symbol: company.symbol,
+                        companyName: company.companyName,
+                      ),
                     ),
                   );
                 },
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-            child: Align(
-              alignment: (index == 0 || index == 1 || index == 3) ? Alignment.center : Alignment.centerLeft,
-              child: isHeader
-                  ? Text(cell.toString(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12))
-                  : (index == 3
-                      ? InkWell(
-                          onTap: () {
-                            TalkerConfig.talker.log("Follow company: $rowIndex");
-                          },
-                          child: Icon(cell ? Icons.check : Icons.add, color: Colors.black),
-                        )
-                      : Text(cell.toString(), style: const TextStyle(fontSize: 12))),
+          child: Container(
+            padding: const EdgeInsets.all(8.0),
+            alignment: Alignment.centerLeft,
+            child: Text(
+              cell,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: isHeader ? FontWeight.bold : FontWeight.normal,
+                color: isHeader ? Colors.white : Colors.black87,
+              ),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         );

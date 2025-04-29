@@ -19,13 +19,13 @@ class ProfileWidget extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           border: Border.all(
-            color: Colors.grey,
+            color: Colors.grey[300]!,
             width: 1,
           ),
           borderRadius: BorderRadius.circular(10),
         ),
         margin: EdgeInsets.all(10),
-        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
         child: Row(
           children: [
             Container(

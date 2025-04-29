@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_app/src/models/financial/request/financial_report_request.dart';
 import 'package:my_app/src/models/financial/response/financial_response.dart';
 
+import '../../blocs/financial/financial_report_bloc.dart';
+
 class CompanyFinanceReportScreen extends StatefulWidget {
-  const CompanyFinanceReportScreen({super.key});
+  final String symbol;
+  const CompanyFinanceReportScreen({super.key, required this.symbol});
 
   @override
   State<CompanyFinanceReportScreen> createState() => _CompanyFinanceReportScreenState();
@@ -11,38 +16,38 @@ class CompanyFinanceReportScreen extends StatefulWidget {
 class _CompanyFinanceReportScreenState extends State<CompanyFinanceReportScreen> {
   String? _selectedValue = "Theo quý";
   String? _selectedReportTab = "Cân đối KT";
-  late List<Headers> headers;
-  late List<FinancialData> value;
 
-  final List<String> _options = [
-    "Theo quý","Theo năm",
-  ];
+  final int _year = DateTime.now().year - 1;
 
-  final List<String> _reportTabs = [
-    "Cân đối KT",
-    "LC Tiền tệ",
-    "Kết quả KD",
-  ];
+  final List<String> _options = ["Theo quý", "Theo năm"];
+  final List<String> _reportTabs = ["Cân đối KT", "LC Tiền tệ", "Kết quả KD"];
 
-
+  final Map<String, String> _reportTypeMap = {
+    "Cân đối KT": "bsheet",
+    "LC Tiền tệ": "cflow",
+    "Kết quả KD": "incsta",
+  };
 
   @override
   void initState() {
     super.initState();
-    // Fake parse dữ liệu từ JSON mẫu
-    headers = [
-      Headers( quarter: 1, year: 2024),
-      Headers( quarter: 2, year: 2023),
-      Headers( quarter: 3, year: 2022),
-      Headers( quarter: 4, year: 2021),
-    ];
-
-    value = [
-      FinancialData(categoryName: "TỔNG TÀI SẢN", value: [727297.968, 769678.7, 777392.922, 864005.703]),
-      FinancialData(categoryName: "Tiền mặt, vàng bạc, đá quý", value: [6470.319, 6594.138, 5870.526, 5696.449]),
-    ];
+    _fetchFinancialReport();
   }
 
+  void _fetchFinancialReport() {
+    final bloc = context.read<FinancialReportBloc>();
+    final type = _reportTypeMap[_selectedReportTab]!;
+    final quarter = _selectedValue == "Theo năm" ? 0 : 4;
+
+    bloc.add(GetFinancialReport(
+      request: FinancialReportRequest(
+        symbol: widget.symbol,
+        type: type,
+        quarter: quarter,
+        year: _year,
+      ),
+    ));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,9 +65,7 @@ class _CompanyFinanceReportScreenState extends State<CompanyFinanceReportScreen>
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
-                      border:  Border.all(
-                        color: Colors.grey[300]!,
-                      ),
+                      border: Border.all(color: Colors.grey[300]!),
                     ),
                     child: DropdownButton<String>(
                       value: _selectedValue,
@@ -85,13 +88,12 @@ class _CompanyFinanceReportScreenState extends State<CompanyFinanceReportScreen>
                       onChanged: (String? value) {
                         setState(() {
                           _selectedValue = value;
+                          _fetchFinancialReport();
                         });
                       },
                     ),
                   ),
-
                   const SizedBox(width: 10),
-
                   Expanded(
                     child: SizedBox(
                       height: 40,
@@ -117,6 +119,7 @@ class _CompanyFinanceReportScreenState extends State<CompanyFinanceReportScreen>
                               onPressed: () {
                                 setState(() {
                                   _selectedReportTab = tab;
+                                  _fetchFinancialReport();
                                 });
                               },
                               child: Text(
@@ -136,68 +139,131 @@ class _CompanyFinanceReportScreenState extends State<CompanyFinanceReportScreen>
                 ],
               ),
             ),
-            //Table
             Container(
-              padding: const EdgeInsets.all(12),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child:DataTable(
-                  columnSpacing: 5,
-                  columns: [
-                    const DataColumn(
-                      label: Text(
-                        "#",
-                        style: TextStyle(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const SizedBox(width: 10),
+                  Text(
+                    "Đơn vị: Tỷ VNĐ",
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.black),
+                  ),
+                ],
+              ),
+            ),
+            BlocBuilder<FinancialReportBloc, FinancialReportState>(
+              builder: (context, state) {
+                if (state is FinancialReportLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (state is FinancialReportSuccess) {
+                  final response = state.response;
+                  return _buildDataTable(response);
+                } else if (state is FinancialReportFailure) {
+                  return Center(child: Text("Lỗi: ${state.error}"));
+                }
+                return const Center(child: Text("Vui lòng chọn báo cáo"));
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDataTable(FinancialResponse response) {
+    final headers = response.headers ?? [];
+    final values = response.financialData ?? [];
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Column(
+        children: [
+          DataTable(
+            columnSpacing: 5,
+            dataRowHeight: 48,
+            headingRowHeight: 40,
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey[300]!),
+            ),
+            columns: [
+              DataColumn(
+                label: Container(
+                  width: MediaQuery.of(context).size.width * 0.3,
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                  child: const Center(
+                    child: Text(
+                      "#",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                        fontFamily: "SFProDisplay",
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              ...headers.map((h) => DataColumn(
+                label: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                  child: Center(
+                    child: Text(
+                      _selectedValue == "Theo năm" ? "${h.year}" : "${h.quarter}/${h.year}",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                        fontFamily: "SFProDisplay",
+                        fontSize: 12,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              )),
+            ],
+            rows: values.map((item) {
+              return DataRow(
+                cells: [
+                  DataCell(
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.3,
+                      padding: const EdgeInsets.all(8),
+                      child: Text(
+                        item.categoryName,
+                        style: const TextStyle(
+                          fontSize: 11,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: Colors.black87,
+                          fontFamily: "SFProDisplay",
+                        ),
+                        maxLines: 2,
+                        softWrap: true,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ),
+                  ...item.value.map(
+                        (v) => DataCell(
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        child: Text(
+                          v.toStringAsFixed(2),
+                          style: const TextStyle(
+                            fontSize: 11,
+                            color: Colors.black87,
+                            fontFamily: "SFProDisplay",
+                          ),
+                          textAlign: TextAlign.center,
                         ),
                       ),
                     ),
-                    ...headers.map((h) => DataColumn(
-                      label: Text(
-                        "${h.quarter}/${h.year}",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                    )),
-                  ],
-                  rows: value.map((item) {
-                    return DataRow(
-                      cells: [
-                        DataCell(
-                          Text(
-                            item.categoryName,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        ...item.value.map(
-                              (v) => DataCell(
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              child: Text(v.toStringAsFixed(2),
-                                  style: const TextStyle(fontSize: 12)),
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  }).toList(),
-                )
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text("Đơn vị: tỷ đồng")
-              ],
-            )
-          ],
-        ),
+                  ),
+                ],
+              );
+            }).toList(),
+          ),
+        ],
       ),
     );
   }

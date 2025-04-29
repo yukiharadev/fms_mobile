@@ -71,15 +71,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
           listener: (context, state) {
             if (state is FileUploadSuccess) {
               context.read<AuthBloc>().add(RegisterRequested(
-                registerRequest: RegisterRequest(
-                  fullName: fullNameController.text,
-                  userName: usernameController.text,
-                  email: emailController.text,
-                  password: passwordController.text,
-                  avatarUrl: state.filePath,
-                  birthDay: selectedDate ?? DateTime.now(),
-                ),
-              ));
+                    registerRequest: RegisterRequest(
+                      fullName: fullNameController.text,
+                      userName: usernameController.text,
+                      email: emailController.text,
+                      password: passwordController.text,
+                      avatarUrl: state.filePath,
+                      birthDay: selectedDate ?? DateTime.now(),
+                    ),
+                  ));
             }
           },
         ),
@@ -115,7 +115,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.2,
                 ),
-                Divider( color: Colors.grey[300], thickness: 1),
+                Divider(color: Colors.grey[300], thickness: 1),
                 Row(
                   children: [
                     GestureDetector(
@@ -142,9 +142,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     child: TextField(
                       readOnly: true,
                       decoration: InputDecoration(
-                        hintText: selectedDate != null
-                            ? "${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}"
-                            : "Select birthday",
+                        hintText: selectedDate != null ? "${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}" : "Select birthday",
                         filled: true,
                         fillColor: Colors.grey[200],
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(6)),
@@ -167,9 +165,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 3),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                       ),
-                      child: isLoading
-                          ? const CircularProgressIndicator(color: Colors.white)
-                          : const Text("Sign Up", style: TextStyle(color: Colors.white)),
+                      child: isLoading ? const CircularProgressIndicator(color: Colors.white) : const Text("Sign Up", style: TextStyle(color: Colors.white)),
                     ),
                   );
                 }),
@@ -181,8 +177,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String hint,
-      {bool isPassword = false, TextInputType inputType = TextInputType.text}) {
+  Widget _buildTextField(TextEditingController controller, String hint, {bool isPassword = false, TextInputType inputType = TextInputType.text}) {
     return TextField(
       controller: controller,
       obscureText: isPassword,

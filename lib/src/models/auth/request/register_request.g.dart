@@ -6,8 +6,7 @@ part of 'register_request.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-RegisterRequest _$RegisterRequestFromJson(Map<String, dynamic> json) =>
-    RegisterRequest(
+RegisterRequest _$RegisterRequestFromJson(Map<String, dynamic> json) => RegisterRequest(
       fullName: json['fullName'] as String,
       userName: json['userName'] as String,
       email: json['email'] as String,
@@ -16,8 +15,7 @@ RegisterRequest _$RegisterRequestFromJson(Map<String, dynamic> json) =>
       birthDay: DateTime.parse(json['birthDay'] as String),
     );
 
-Map<String, dynamic> _$RegisterRequestToJson(RegisterRequest instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$RegisterRequestToJson(RegisterRequest instance) => <String, dynamic>{
       'fullName': instance.fullName,
       'userName': instance.userName,
       'email': instance.email,

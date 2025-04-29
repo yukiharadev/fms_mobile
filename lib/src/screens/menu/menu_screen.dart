@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_app/src/blocs/auth/auth_bloc.dart';
+import 'package:my_app/src/screens/tools/business_analytics_report_screen.dart';
 
 import '../../widgets/profile/profile_widget.dart';
 import '../login/login_screen.dart';
@@ -41,6 +42,50 @@ class MenuScreen extends StatelessWidget {
                     fontSize: 16,
                   ),
                 ),
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 5),
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    color: Colors.blue[50],
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    "Phân tích kỹ thuật",
+                    style: TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 5),
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    color: Colors.blue[50],
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    "Lọc cổ phiếu theo giá",
+                    style: TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => BusinessAnalyticsReportScreen()));
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(vertical: 5),
+                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                      color: Colors.blue[50],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      "Báo cáo phân tích doanh nghiệp",
+                      style: TextStyle(fontStyle: FontStyle.italic),
+                    ),
+                  ),
+                )
               ],
             ),
           ),
@@ -57,6 +102,71 @@ class MenuScreen extends StatelessWidget {
                     fontSize: 16,
                   ),
                 ),
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 5),
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    color: Colors.blue[50],
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    "Chế độ tối",
+                    style: TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 5),
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    color: Colors.blue[50],
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    "Thông báo",
+                    style: TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 5),
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    color: Colors.blue[50],
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    "Ngôn ngữ",
+                    style: TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 5),
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    color: Colors.blue[50],
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    "Đổi mật khẩu",
+                    style: TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 5),
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    color: Colors.blue[50],
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    "Thông tin ứng dụng",
+                    style: TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                )
               ],
             ),
           ),
@@ -81,8 +191,8 @@ class MenuScreen extends StatelessWidget {
                     ),
                   ),
                   child: const Text(
-                    "Logout",
-                    style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w500),
+                    "Đăng xuất",
+                    style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                   onPressed: () {
                     context.read<AuthBloc>().add(

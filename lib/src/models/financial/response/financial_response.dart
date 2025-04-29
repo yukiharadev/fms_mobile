@@ -4,22 +4,20 @@ part 'financial_response.g.dart';
 @JsonSerializable()
 class FinancialResponse {
   @JsonKey(name: 'headers')
-  final Headers? headers;
+  final List<Headers> headers;
   @JsonKey(name: 'data')
   final List<FinancialData>? financialData;
 
   FinancialResponse({
-    this.headers,
+    required this.headers,
     this.financialData,
   });
   factory FinancialResponse.fromJson(Map<String, dynamic> json) => _$FinancialResponseFromJson(json);
   Map<String, dynamic> toJson() => _$FinancialResponseToJson(this);
 }
 
-
-
 @JsonSerializable()
-class Headers{
+class Headers {
   @JsonKey(name: 'quarter')
   final int? quarter;
   @JsonKey(name: 'year')
@@ -34,7 +32,7 @@ class Headers{
 }
 
 @JsonSerializable()
-class FinancialData{
+class FinancialData {
   @JsonKey(name: 'categoryName')
   final String categoryName;
   @JsonKey(name: 'value')

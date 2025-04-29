@@ -11,8 +11,7 @@ LoginRequest _$LoginRequestFromJson(Map<String, dynamic> json) => LoginRequest(
       password: json['password'] as String,
     );
 
-Map<String, dynamic> _$LoginRequestToJson(LoginRequest instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$LoginRequestToJson(LoginRequest instance) => <String, dynamic>{
       'userName': instance.userName,
       'password': instance.password,
     };

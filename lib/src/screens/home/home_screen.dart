@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:my_app/src/DependencyInjection/service_locator.dart';
+import 'package:my_app/src/blocs/home/top_company/top_company_bloc.dart';
 import 'package:my_app/src/configs/constants.dart';
 import 'package:my_app/src/widgets/home/table_company_widget.dart';
-
+import '../../repositories/top_company_repository.dart';
 import '../search/search_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -29,7 +32,6 @@ class HomeScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Row(
-                  spacing: 3,
                   children: [
                     Icon(Icons.search),
                     Expanded(
@@ -57,40 +59,56 @@ class HomeScreen extends StatelessWidget {
           color: Colors.white,
           child: Column(
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                    width: MediaQuery.of(context).size.width,
-                    color: Colors.white,
-                    child: Text(
-                      "Top 10 công ty",
-                      style: TextStyle(fontWeight: FontWeight.bold, decoration: TextDecoration.combine([TextDecoration.underline]), fontSize: 14),
-                    ),
-                  ),
-                  TableCompanyWidget()
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                    width: MediaQuery.of(context).size.width,
-                    color: Colors.white,
-                    child: Text(
-                      "VN30",
-                      style: TextStyle(fontWeight: FontWeight.bold, decoration: TextDecoration.combine([TextDecoration.underline]), fontSize: 14),
-                    ),
-                  ),
-                  TableCompanyWidget()
-                ],
-              )
+              _buildSection(context, "HOSE", "Top công ty sàn HOSE"),
+              _buildSection(context, "HNX", "Top công ty sàn HNX"),
+              _buildSection(context, "VN30", "Top công ty sàn VN30"),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildSection(BuildContext context, String centerId, String title) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+          width: MediaQuery.of(context).size.width,
+          color: Colors.white,
+          child: Text(
+            title,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              decoration: TextDecoration.underline,
+              fontSize: 14,
+            ),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => TopCompanyBloc(
+            topCompanyRepository: getIt<TopCompanyRepository>(),
+          )..add(TopCompanyRequested(centerId: centerId)),
+          child: BlocBuilder<TopCompanyBloc, TopCompanyState>(
+            builder: (context, state) {
+              if (state is TopCompanyLoading && state.centerId == centerId) {
+                return Center(
+                    child: Text(
+                  "Loading...",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11),
+                ));
+              } else if (state is TopCompanySuccess && state.centerId == centerId) {
+                return TableCompanyWidget(companies: state.topCompanyFloorResponse);
+              } else if (state is TopCompanyError && state.centerId == centerId) {
+                return Center(child: Text(state.message));
+              }
+              context.read<TopCompanyBloc>().add(TopCompanyRequested(centerId: centerId));
+              return SizedBox.shrink();
+            },
+          ),
+        ),
+      ],
     );
   }
 }

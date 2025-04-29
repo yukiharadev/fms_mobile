@@ -114,8 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildInput(TextEditingController controller, String hint,
-      {bool isPassword = false, TextInputType inputType = TextInputType.text}) {
+  Widget _buildInput(TextEditingController controller, String hint, {bool isPassword = false, TextInputType inputType = TextInputType.text}) {
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: TextField(

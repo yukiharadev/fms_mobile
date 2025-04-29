@@ -16,11 +16,11 @@ class AppNavigation extends StatefulWidget {
 class _AppNavigationState extends State<AppNavigation> {
   int _currentIndex = 0;
 
-  final List<Widget> _screens = const [
-    HomeScreen(),
-    SearchScreen(),
+  final List<Widget> _screens = [
+    const HomeScreen(),
+    const SearchScreen(),
     FollowScreen(),
-    MenuScreen(),
+    const MenuScreen(),
   ];
 
   void _onTabTapped(int index) {

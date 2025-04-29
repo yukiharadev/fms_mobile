@@ -1,284 +1,182 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_app/src/blocs/company/company_ownership/company_ownership_bloc.dart';
 import 'package:my_app/src/widgets/company/ownership_structure.dart';
 import 'package:readmore/readmore.dart';
+import '../../models/company/response/company_overview_response.dart';
 
-class CompanyOverviewScreen extends StatelessWidget {
-  const CompanyOverviewScreen({super.key});
+class CompanyOverviewScreen extends StatefulWidget {
+  final String symbol;
+  final CompanyOverviewResponse companyOverview;
+  const CompanyOverviewScreen({super.key, required this.symbol, required this.companyOverview});
+
+  @override
+  State<CompanyOverviewScreen> createState() => _CompanyOverviewScreenState();
+}
+
+class _CompanyOverviewScreenState extends State<CompanyOverviewScreen> {
+  @override
+  void initState() {
+    context.read<CompanyOwnershipBloc>().add(GetCompanyOwnership(symbol: widget.symbol));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-        child: Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      spacing: 5,
-      children: [
-        Image.network(
-          'https://picsum.photos/400/150',
-          fit: BoxFit.cover,
-          height: 150,
-        ),
-        // Ten and Description
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Column(
-            children: [
-              Text("Ngân hàng thương mại cổ phần Á Châu",
-                  style: TextStyle(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          CachedNetworkImage(
+            imageUrl: widget.companyOverview.company?.logoUrl ?? '',
+            fit: BoxFit.cover,
+            height: 150,
+            errorWidget: (context, url, error) => const Icon(Icons.error),
+          ),
+          // Company Name and Description
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Column(
+              children: [
+                Text(
+                  widget.companyOverview.company?.companyName ?? 'N/A',
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                  )),
-              ReadMoreText(
-                "ACB là  một trong những ngân hàng thương mại cổ phần hàng đầu tại Việt Nam,"
-                " với hệ thống mạng lưới chi nhánh rộng khắp nơi và hơn 9000 nhân viên làm việc, "
-                "với nhiều loại hình sản phẩm, dịch vụ đa dạng",
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.black,
+                  ),
                 ),
-                trimMode: TrimMode.Line,
-                trimLines: 3,
-                trimCollapsedText: ' Xem thêm',
-                trimExpandedText: '\nThu gọn',
-                lessStyle: TextStyle(
-                  fontSize: 12,
-                  color: Colors.blue,
-                  fontWeight: FontWeight.bold,
-                ),
-                moreStyle: TextStyle(
-                  fontSize: 12,
-                  color: Colors.blue,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Divider(
-                color: Colors.black,
-                thickness: 1,
-              )
-            ],
-          ),
-        ),
-        // Thong tin chi tiet
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10),
-          child: Column(
-            spacing: 3,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("Thông tin cơ bản",
-                  style: TextStyle(
-                    fontSize: 16,
+                ReadMoreText(
+                  widget.companyOverview.company?.description ?? '',
+                  style: const TextStyle(fontSize: 12, color: Colors.black),
+                  trimMode: TrimMode.Line,
+                  trimLines: 3,
+                  trimCollapsedText: ' Xem thêm',
+                  trimExpandedText: '\nThu gọn',
+                  lessStyle: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.blue,
                     fontWeight: FontWeight.bold,
-                  )),
-              Text(
-                "Loại hình: Ngân hàng thương mại",
-                style: TextStyle(
-                  fontSize: 12.5,
-                  color: Colors.black,
-                ),
-              ),
-              Text(
-                "Website: https://www.acb.com.vn/",
-                style: TextStyle(
-                  fontSize: 12.5,
-                  color: Colors.black,
-                ),
-              ),
-              Text(
-                "Địa chỉ: 442 Nguyễn Thị Minh Khai, Phường 5, Quận 3, TP.HCM",
-                style: TextStyle(
-                  fontSize: 12.5,
-                  color: Colors.black,
-                ),
-              ),
-              Text(
-                "Điện thoại: 028 3829 9999",
-                style: TextStyle(
-                  fontSize: 12.5,
-                  color: Colors.black,
-                ),
-              ),
-              Divider(
-                color: Colors.black,
-                thickness: 1,
-              )
-            ],
-          ),
-        ),
-        // Chi so tai chinh
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10),
-          child: Column(
-            spacing: 3,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("Chỉ số tài chính",
-                  style: TextStyle(
-                    fontSize: 16,
+                  ),
+                  moreStyle: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.blue,
                     fontWeight: FontWeight.bold,
-                  )),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "P/E",
-                    style: TextStyle(
-                      fontSize: 12.5,
-                      color: Colors.black,
-                    ),
                   ),
-                  Text(
-                    "6.93",
-                    style: TextStyle(fontSize: 12.5, color: Colors.black, fontWeight: FontWeight.bold),
-                  )
-                ],
-              ),
-              Divider(
-                color: Colors.black54,
-                thickness: 0.3,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "P/B",
-                    style: TextStyle(
-                      fontSize: 12.5,
-                      color: Colors.black,
-                    ),
-                  ),
-                  Text(
-                    "1.39",
-                    style: TextStyle(fontSize: 12.5, color: Colors.black, fontWeight: FontWeight.bold),
-                  )
-                ],
-              ),
-              Divider(
-                color: Colors.black54,
-                thickness: 0.3,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Vốn hóa",
-                    style: TextStyle(
-                      fontSize: 12.5,
-                      color: Colors.black,
-                    ),
-                  ),
-                  Text(
-                    "116,356.44",
-                    style: TextStyle(fontSize: 12.5, color: Colors.black, fontWeight: FontWeight.bold),
-                  )
-                ],
-              ),
-              Divider(
-                color: Colors.black54,
-                thickness: 0.3,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "ESP Cơ bản",
-                    style: TextStyle(
-                      fontSize: 12.5,
-                      color: Colors.black,
-                    ),
-                  ),
-                  Text(
-                    "3.76",
-                    style: TextStyle(fontSize: 12.5, color: Colors.black, fontWeight: FontWeight.bold),
-                  )
-                ],
-              ),
-              Divider(
-                color: Colors.black54,
-                thickness: 0.3,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "ESP pha loãng",
-                    style: TextStyle(
-                      fontSize: 12.5,
-                      color: Colors.black,
-                    ),
-                  ),
-                  Text(
-                    "3.76",
-                    style: TextStyle(fontSize: 12.5, color: Colors.black, fontWeight: FontWeight.bold),
-                  )
-                ],
-              ),
-              Divider(
-                color: Colors.black54,
-                thickness: 0.3,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Tỷ lệ % room NN",
-                    style: TextStyle(
-                      fontSize: 12.5,
-                      color: Colors.black,
-                    ),
-                  ),
-                  Text(
-                    "0.00",
-                    style: TextStyle(fontSize: 12.5, color: Colors.black, fontWeight: FontWeight.bold),
-                  )
-                ],
-              ),
-              Divider(
-                color: Colors.black54,
-                thickness: 0.3,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Giá trị sổ sách",
-                    style: TextStyle(
-                      fontSize: 12.5,
-                      color: Colors.black,
-                    ),
-                  ),
-                  Text(
-                    "18.69",
-                    style: TextStyle(fontSize: 12.5, color: Colors.black, fontWeight: FontWeight.bold),
-                  )
-                ],
-              ),
-              Divider(
-                color: Colors.black54,
-                thickness: 0.3,
-              ),
-            ],
+                ),
+                const Divider(color: Colors.black, thickness: 1),
+              ],
+            ),
           ),
-        ),
+          // Basic Information
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Thông tin cơ bản",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  "Loại hình: ${widget.companyOverview.sector?.name ?? 'N/A'}",
+                  style: const TextStyle(fontSize: 12.5, color: Colors.black),
+                ),
+                Text(
+                  "Website: ${widget.companyOverview.company?.website ?? 'N/A'}",
+                  style: const TextStyle(fontSize: 12.5, color: Colors.black),
+                ),
+                Text(
+                  "Địa chỉ: ${widget.companyOverview.company?.address ?? 'N/A'}",
+                  style: const TextStyle(fontSize: 12.5, color: Colors.black),
+                ),
+                Text(
+                  "Điện thoại: ${widget.companyOverview.company?.phoneNumber ?? 'N/A'}",
+                  style: const TextStyle(fontSize: 12.5, color: Colors.black),
+                ),
+                const Divider(color: Colors.black, thickness: 1),
+              ],
+            ),
+          ),
+          // Financial Metrics
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Chỉ số tài chính",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                _buildFinancialRow("P/E", "6.93"),
+                const Divider(color: Colors.black54, thickness: 0.3),
+                _buildFinancialRow("P/B", "1.39"),
+                const Divider(color: Colors.black54, thickness: 0.3),
+                _buildFinancialRow("Vốn hóa", "116,356.44"),
+                const Divider(color: Colors.black54, thickness: 0.3),
+                _buildFinancialRow("ESP Cơ bản", "3.76"),
+                const Divider(color: Colors.black54, thickness: 0.3),
+                _buildFinancialRow("ESP pha loãng", "3.76"),
+                const Divider(color: Colors.black54, thickness: 0.3),
+                _buildFinancialRow("Tỷ lệ % room NN", "0.00"),
+                const Divider(color: Colors.black54, thickness: 0.3),
+                _buildFinancialRow("Giá trị sổ sách", "18.69"),
+                const Divider(color: Colors.black54, thickness: 0.3),
+              ],
+            ),
+          ),
+          // Ownership Structure
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Cơ cấu sở hữu",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                BlocBuilder<CompanyOwnershipBloc, CompanyOwnershipState>(
+                  builder: (context, ownershipState) {
+                    if (ownershipState is CompanyOwnershipLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (ownershipState is CompanyOwnershipError) {
+                      return Center(child: Text("Error: ${ownershipState.message}"));
+                    } else if (ownershipState is CompanyOwnershipSuccess) {
+                      return SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        child: OwnershipStructure(
+                          data: ownershipState.response,
+                        ),
+                      );
+                    }
+                    return const Center(child: Text("Unknown state"));
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-        // Co cau so huu
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("Cơ cấu sở hữu",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  )),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.9,
-                child: OwnershipStructure(),
-              )
-            ],
+  Widget _buildFinancialRow(String label, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(fontSize: 12.5, color: Colors.black),
+        ),
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 12.5,
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
           ),
-        )
+        ),
       ],
-    ));
+    );
   }
 }
