@@ -17,10 +17,8 @@ class AnalyticsReportDetailScreen extends StatelessWidget {
     if (Platform.isAndroid) {
       final androidInfo = await DeviceInfoPlugin().androidInfo;
       if (androidInfo.version.sdkInt >= 29) {
-        // Android 10+ (API 29+): Không cần quyền đặc biệt cho Downloads
         return true;
       } else {
-        // Android 9 trở xuống: Yêu cầu WRITE_EXTERNAL_STORAGE
         final status = await Permission.storage.request();
         if (!status.isGranted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -60,7 +58,6 @@ class AnalyticsReportDetailScreen extends StatelessWidget {
         const SnackBar(content: Text("Download completed")),
       );
 
-      // Xóa file tạm sau khi lưu
       File(tempFilePath).delete();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_app/src/DependencyInjection/service_locator.dart';
+import 'package:my_app/src/blocs/financial/financial_field/financial_field_report_bloc.dart';
+import 'package:my_app/src/models/financial/request/financial_field_report_request.dart';
+import 'package:my_app/src/repositories/financial_report_repository.dart';
+import 'package:my_app/src/widgets/company/financial/business_result_widget.dart';
+import 'package:my_app/src/widgets/company/financial/cash_stock_chart_widget.dart';
+import 'package:my_app/src/widgets/company/financial/eps_chart_widget.dart';
+import 'package:my_app/src/widgets/company/financial/financial_chart_main_indicator_widget.dart';
 
 class CompanyFinanceScreen extends StatelessWidget {
-  const CompanyFinanceScreen({super.key});
+  final String symbol;
+  const CompanyFinanceScreen({super.key, required this.symbol});
 
   @override
   Widget build(BuildContext context) {
@@ -11,151 +19,66 @@ class CompanyFinanceScreen extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 10,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            FinancialDataLabelWidget(),
-            Divider(
-              color: Colors.black,
-              thickness: 0.5,
+            CashStockChartWidget(symbol: symbol),
+            _buildEpsSection(context),
+            _buildSection(
+              context,
+              "main_indicator_result",
+              FinancialChartMainIndicatorWidget(symbol: symbol),
+              FinancialFieldReportRequest(
+                symbol: symbol,
+                type: "Tổng tài sản",
+                quarter: 4,
+                widgetType: "main_indicator_result",
+              ),
             ),
-            FinancialDataLabelWidget(),
-            Divider(
-              color: Colors.black,
-              thickness: 0.5,
+            _buildSection(
+              context,
+              "business_result",
+              BusinessResultWidget(symbol: symbol),
+              FinancialFieldReportRequest(
+                symbol: symbol,
+                type: "Tổng lợi nhuận trước thuế",
+                quarter: 4,
+                widgetType: "business_result",
+              ),
             ),
-            FinancialDataLabelWidget(),
-            Divider(
-              color: Colors.black,
-              thickness: 0.5,
-            )
           ],
         ),
       ),
     );
   }
-}
 
-class FinancialDataLabelWidget extends StatefulWidget {
-  const FinancialDataLabelWidget({
-    super.key,
-  });
-
-  @override
-  State<FinancialDataLabelWidget> createState() => _FinancialDataLabelWidgetState();
-}
-
-class _FinancialDataLabelWidgetState extends State<FinancialDataLabelWidget> {
-  String? _selectedValue = "Tổng tài sản";
-  final List<String> _options = [
-    "Tổng tài sản",
-    "Tổng nợ phải trả",
-    "Tổng vốn chủ sở hữu",
-    "Doanh thu thuần",
-    "Lợi nhuận gộp",
-    "Lợi nhuận trước thuế",
-    "Lợi nhuận sau thuế",
-  ];
-
-  final List<FinancialData> _financialDataList = [
-    FinancialData(1, 844008),
-    FinancialData(2, 814321),
-    FinancialData(3, 824008),
-    FinancialData(4, 864008),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildSection(
+    BuildContext context,
+    String widgetType,
+    Widget child,
+    FinancialFieldReportRequest initialRequest,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 3,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text("Các chỉ tiêu chính",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                )),
-            Text("Đơn vị: tỷ đồng",
-                style: TextStyle(
-                  fontSize: 12.5,
-                  color: Colors.black,
-                ))
-          ],
+        BlocProvider(
+          create: (context) => FinancialFieldReportBloc(
+            repository: getIt<FinancialReportRepository>(),
+          )..add(GetFinancialFieldReport(request: initialRequest)),
+          child: child,
         ),
-        Text("Bấm vào mỗi chỉ tiêu để xem biểu đồ tương ứng",
-            style: TextStyle(
-              fontSize: 10,
-              color: Colors.black,
-            )),
-        //Dropdown button
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          width: MediaQuery.of(context).size.width * 0.4,
-          height: 40,
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.black54, width: 0.5),
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: DropdownButton<String>(
-            value: _selectedValue,
-            isExpanded: true,
-            borderRadius: BorderRadius.circular(10),
-            dropdownColor: Colors.white,
-            icon: Icon(Icons.keyboard_arrow_down),
-            underline: SizedBox.shrink(),
-            items: _options.map((String value) {
-              return DropdownMenuItem<String>(
-                  value: value, child: Text(value, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)));
-            }).toList(),
-            onChanged: (String? value) {
-              setState(() {
-                _selectedValue = value;
-              });
-            },
-          ),
-        ),
-        SizedBox(
-          height: MediaQuery.of(context).size.height * 0.25,
-          child: SfCartesianChart(
-            primaryXAxis: CategoryAxis(
-              labelAlignment: LabelAlignment.start,
-              labelPlacement: LabelPlacement.onTicks,
-            ),
-            primaryYAxis: NumericAxis(
-              interval: 20000,
-              numberFormat: NumberFormat.compact(),
-              opposedPosition: true,
-            ),
-            series: [
-              SplineAreaSeries<FinancialData, String>(
-                dataSource: _financialDataList,
-                xValueMapper: (FinancialData data, _) => "${data.x}/2023",
-                yValueMapper: (FinancialData data, _) => data.y,
-                enableTooltip: true,
-                gradient: LinearGradient(
-                  colors: <Color>[
-                    Colors.orange.withOpacity(0.8),
-                    Colors.orange.withOpacity(0.4),
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-                name: _selectedValue!,
-                markerSettings: MarkerSettings(isVisible: true),
-              ),
-            ],
-          ),
-        )
       ],
     );
   }
-}
 
-class FinancialData {
-  FinancialData(this.x, this.y);
-  final int x;
-  final double y;
+  Widget _buildEpsSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ESPChartWidget(
+          symbol: symbol,
+        ),
+      ],
+    );
+  }
 }

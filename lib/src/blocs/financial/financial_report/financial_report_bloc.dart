@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:my_app/src/models/financial/request/financial_report_request.dart';
 import 'package:my_app/src/repositories/financial_report_repository.dart';
 
-import '../../models/financial/response/financial_response.dart';
+import '../../../models/financial/response/financial_response.dart';
 
 part 'financial_report_event.dart';
 part 'financial_report_state.dart';

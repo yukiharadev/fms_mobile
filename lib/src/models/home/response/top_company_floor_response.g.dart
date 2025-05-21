@@ -6,7 +6,8 @@ part of 'top_company_floor_response.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class TopCompanyFloorResponseAdapter extends TypeAdapter<TopCompanyFloorResponse> {
+class TopCompanyFloorResponseAdapter
+    extends TypeAdapter<TopCompanyFloorResponse> {
   @override
   final int typeId = 0;
 
@@ -45,25 +46,33 @@ class TopCompanyFloorResponseAdapter extends TypeAdapter<TopCompanyFloorResponse
   int get hashCode => typeId.hashCode;
 
   @override
-  bool operator ==(Object other) => identical(this, other) || other is TopCompanyFloorResponseAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TopCompanyFloorResponseAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
 }
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-TopCompanyFloorResponse _$TopCompanyFloorResponseFromJson(Map<String, dynamic> json) => TopCompanyFloorResponse(
-      symbol: json['Symbol'] as String,
-      ceilPrice: (json['CeilPrice'] as num).toDouble(),
-      floorPrice: (json['FloorPrice'] as num).toDouble(),
-      volume: (json['Volume'] as num).toInt(),
-      companyName: json['CompanyName'] as String,
+TopCompanyFloorResponse _$TopCompanyFloorResponseFromJson(
+        Map<String, dynamic> json) =>
+    TopCompanyFloorResponse(
+      symbol: json['symbol'] as String,
+      ceilPrice: (json['ceiling_price'] as num).toDouble(),
+      floorPrice: (json['floor_price'] as num).toDouble(),
+      volume: (json['accumulated_vol'] as num).toInt(),
+      companyName: json['company_name'] as String,
     );
 
-Map<String, dynamic> _$TopCompanyFloorResponseToJson(TopCompanyFloorResponse instance) => <String, dynamic>{
-      'Symbol': instance.symbol,
-      'CeilPrice': instance.ceilPrice,
-      'FloorPrice': instance.floorPrice,
-      'Volume': instance.volume,
-      'CompanyName': instance.companyName,
+Map<String, dynamic> _$TopCompanyFloorResponseToJson(
+        TopCompanyFloorResponse instance) =>
+    <String, dynamic>{
+      'symbol': instance.symbol,
+      'ceiling_price': instance.ceilPrice,
+      'floor_price': instance.floorPrice,
+      'accumulated_vol': instance.volume,
+      'company_name': instance.companyName,
     };

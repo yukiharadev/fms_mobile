@@ -1,10 +1,12 @@
 import 'package:my_app/src/models/company/response/company_overview_response.dart';
 import 'package:my_app/src/models/company/response/ownership_response.dart';
+import 'package:my_app/src/models/company/response/page_company_response.dart';
 import 'package:my_app/src/services/dio_client.dart';
 import 'package:my_app/src/utils/constants.dart';
 import 'package:talker/talker.dart';
 
 import '../models/company/response/company_leadership_response.dart';
+import '../models/general/get_page_request.dart';
 
 class CompanyService {
   final DioClient dioClient;
@@ -39,6 +41,32 @@ class CompanyService {
       return result.map((e) => CompanyLeadershipResponse.fromJson(e)).toList();
     } else {
       throw Exception("Failed to load company leadership data");
+    }
+  }
+
+  Future<List<CompanyDetailResponse>> searchCompany(String query) async {
+    final response = await dioClient.dio.get("${Constants.searchCompanyUrl}$query");
+    if (response.statusCode == 200) {
+      var result = response.data["value"];
+      Talker talker = Talker();
+      talker.debug("Search company data: $result");
+      return (result as List).map((e) => CompanyDetailResponse.fromJson(e)).toList();
+    } else {
+      throw Exception("Failed to load company search data");
+    }
+  }
+
+  Future<List<PageCompanyResponse>> getPageSizeCompany(GetPageRequest request) async {
+    final response = await dioClient.dio.get(
+      "${Constants.pageCompanyUrl}?PageIndex=${request.pageIndex}&PageSize=${request.pageSize}",
+    );
+    if (response.statusCode == 200) {
+      var result = response.data["value"]['dataResponse'];
+      Talker talker = Talker();
+      talker.debug("Page size company data: $result");
+      return (result as List).map((e) => PageCompanyResponse.fromJson(e)).toList();
+    } else {
+      throw Exception("Failed to load page size company data");
     }
   }
 }

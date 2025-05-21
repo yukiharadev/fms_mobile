@@ -119,11 +119,6 @@ class LeadershipItemWidget extends StatelessWidget {
                           "Chức vụ: ${positionsResponse.name}",
                           style: const TextStyle(fontSize: 11.5, color: Colors.black87),
                         ),
-                        Divider(
-                          color: Colors.grey[300],
-                          height: 1,
-                          thickness: 1,
-                        )
                       ],
                     ),
                     Icon(

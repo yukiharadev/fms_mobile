@@ -45,23 +45,23 @@ class _BusinessAnalyticsReportScreenState extends State<BusinessAnalyticsReportS
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            "Báo cáo phân tích doanh nghiệp",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          centerTitle: true,
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(1),
-            child: Container(
-              color: Colors.grey[300],
-              height: 1,
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          "Báo cáo phân tích doanh nghiệp",
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(
+            color: Colors.grey[300],
+            height: 1,
           ),
         ),
-        body: ListView(
+      ),
+      body: SafeArea(
+        child: ListView(
           children: [
             Container(
               width: MediaQuery.of(context).size.width * 0.85,

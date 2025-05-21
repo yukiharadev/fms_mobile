@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_app/src/models/financial/request/financial_report_request.dart';
 import 'package:my_app/src/models/financial/response/financial_response.dart';
+import 'package:talker/talker.dart';
 
-import '../../blocs/financial/financial_report_bloc.dart';
+import '../../blocs/financial/financial_report/financial_report_bloc.dart';
 
 class CompanyFinanceReportScreen extends StatefulWidget {
   final String symbol;
@@ -17,7 +18,7 @@ class _CompanyFinanceReportScreenState extends State<CompanyFinanceReportScreen>
   String? _selectedValue = "Theo quý";
   String? _selectedReportTab = "Cân đối KT";
 
-  final int _year = DateTime.now().year - 1;
+  late int _year = DateTime.now().year - 1;
 
   final List<String> _options = ["Theo quý", "Theo năm"];
   final List<String> _reportTabs = ["Cân đối KT", "LC Tiền tệ", "Kết quả KD"];
@@ -144,7 +145,40 @@ class _CompanyFinanceReportScreenState extends State<CompanyFinanceReportScreen>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const SizedBox(width: 10),
+                  Row(
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            _year++;
+                            _fetchFinancialReport();
+                          });
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          child: Icon(
+                            Icons.arrow_back_ios,
+                            size: 14,
+                          ),
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            _year--;
+                            _fetchFinancialReport();
+                          });
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          child: Icon(
+                            Icons.arrow_forward_ios,
+                            size: 14,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                   Text(
                     "Đơn vị: Tỷ VNĐ",
                     style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.black),
@@ -205,22 +239,22 @@ class _CompanyFinanceReportScreenState extends State<CompanyFinanceReportScreen>
                 ),
               ),
               ...headers.map((h) => DataColumn(
-                label: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                  child: Center(
-                    child: Text(
-                      _selectedValue == "Theo năm" ? "${h.year}" : "${h.quarter}/${h.year}",
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                        fontFamily: "SFProDisplay",
-                        fontSize: 12,
+                    label: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                      child: Center(
+                        child: Text(
+                          _selectedValue == "Theo năm" ? "${h.year}" : "${h.quarter}/${h.year}",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                            fontFamily: "SFProDisplay",
+                            fontSize: 12,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                      textAlign: TextAlign.center,
                     ),
-                  ),
-                ),
-              )),
+                  )),
             ],
             rows: values.map((item) {
               return DataRow(
@@ -244,7 +278,7 @@ class _CompanyFinanceReportScreenState extends State<CompanyFinanceReportScreen>
                     ),
                   ),
                   ...item.value.map(
-                        (v) => DataCell(
+                    (v) => DataCell(
                       Container(
                         padding: const EdgeInsets.all(8),
                         child: Text(

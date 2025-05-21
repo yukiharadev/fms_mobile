@@ -2,6 +2,7 @@ import 'package:dio/src/response.dart';
 import 'package:my_app/src/models/auth/request/login_request.dart';
 import 'package:my_app/src/models/auth/request/register_request.dart';
 import 'package:my_app/src/models/auth/response/auth_response.dart';
+import 'package:my_app/src/models/auth/response/user_info_response.dart';
 import 'package:my_app/src/services/user_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -44,5 +45,11 @@ class AuthRepository {
 
   Future<Response> register(RegisterRequest registerRequest) async {
     return await userService.register(registerRequest);
+  }
+
+  Future<UserInfoResponse> getUserInfo() async {
+
+    final response = await userService.getUserInfo();
+    return response;
   }
 }

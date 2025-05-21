@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_app/src/blocs/auth/auth_bloc.dart';
+import 'package:my_app/src/blocs/auth/auth/auth_bloc.dart';
 import 'package:my_app/src/models/auth/request/login_request.dart';
 import 'package:my_app/src/screens/login/register_screen.dart';
 import 'package:my_app/src/widgets/app/app_navigation.dart';

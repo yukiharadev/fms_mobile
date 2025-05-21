@@ -1,5 +1,6 @@
 import 'package:my_app/src/services/financial_report_service.dart';
 
+import '../models/financial/request/financial_field_report_request.dart';
 import '../models/financial/request/financial_report_request.dart';
 import '../models/financial/response/financial_response.dart';
 
@@ -13,6 +14,15 @@ class FinancialReportRepository {
       return response;
     } catch (e) {
       throw Exception("Failed to load financial report data: $e");
+    }
+  }
+
+  Future<FinancialResponse> getFinancialFieldReport(FinancialFieldReportRequest request) async {
+    try {
+      final response = await service.getFinancialFieldReport(request);
+      return response;
+    } catch (e) {
+      throw Exception("Failed to load financial field report data: $e");
     }
   }
 }

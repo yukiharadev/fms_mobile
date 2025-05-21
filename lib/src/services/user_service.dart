@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:my_app/src/models/auth/request/login_request.dart';
 import 'package:my_app/src/models/auth/request/register_request.dart';
+import 'package:my_app/src/models/auth/response/user_info_response.dart';
 import 'package:my_app/src/services/dio_client.dart';
 import 'package:talker/talker.dart';
 
@@ -20,10 +21,13 @@ class UserService {
     return response;
   }
 
-  Future<Response> getUserInfo() async {
-    return await dioClient.dio.get(
-      '/auth-service/user-info',
+  Future<UserInfoResponse> getUserInfo() async {
+
+    final response = await dioClient.dio.get(
+      '/auth-service/userinfo',
     );
+
+    return UserInfoResponse.fromJson(response.data['value']);
   }
 
   Future<Response> register(RegisterRequest registerRequest) async {

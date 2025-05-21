@@ -9,10 +9,9 @@ class TopCompanyService {
   TopCompanyService({required this.dio});
 
   Future<List<TopCompanyFloorResponse>> getTopCompany(String centerId) async {
-    final response = await dio.get("${Constants.topCompanyUrl}$centerId&type=UP");
+    final response = await dio.get("${Constants.topCompanyUrl}$centerId");
     if (response.statusCode == 200) {
-      final data = jsonDecode(response.data);
-      final result = data["Data"] as List;
+      final result = response.data['data'] as List;
       final List<TopCompanyFloorResponse> companyResponse = result.map((e) => TopCompanyFloorResponse.fromJson(e)).toList();
       return companyResponse;
     } else {

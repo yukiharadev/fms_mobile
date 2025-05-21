@@ -59,9 +59,9 @@ class HomeScreen extends StatelessWidget {
           color: Colors.white,
           child: Column(
             children: [
-              _buildSection(context, "HOSE", "Top công ty sàn HOSE"),
-              _buildSection(context, "HNX", "Top công ty sàn HNX"),
-              _buildSection(context, "VN30", "Top công ty sàn VN30"),
+              _buildSection(context, "10", "Top công ty sàn HOSE"),
+              _buildSection(context, "02", "Top công ty sàn HNX"),
+              _buildSection(context, "03", "Top công ty sàn UPCOM"),
             ],
           ),
         ),

@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_app/src/blocs/company/company_ownership/company_ownership_bloc.dart';
+import 'package:my_app/src/blocs/financial/financial_index/financial_index_bloc.dart';
 import 'package:my_app/src/widgets/company/ownership_structure.dart';
 import 'package:readmore/readmore.dart';
 import '../../models/company/response/company_overview_response.dart';
@@ -19,6 +20,7 @@ class _CompanyOverviewScreenState extends State<CompanyOverviewScreen> {
   @override
   void initState() {
     context.read<CompanyOwnershipBloc>().add(GetCompanyOwnership(symbol: widget.symbol));
+    context.read<FinancialIndexBloc>().add(GetFinancialIndex(symbol: widget.symbol));
     super.initState();
   }
 
@@ -99,31 +101,46 @@ class _CompanyOverviewScreenState extends State<CompanyOverviewScreen> {
             ),
           ),
           // Financial Metrics
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "Chỉ số tài chính",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                _buildFinancialRow("P/E", "6.93"),
-                const Divider(color: Colors.black54, thickness: 0.3),
-                _buildFinancialRow("P/B", "1.39"),
-                const Divider(color: Colors.black54, thickness: 0.3),
-                _buildFinancialRow("Vốn hóa", "116,356.44"),
-                const Divider(color: Colors.black54, thickness: 0.3),
-                _buildFinancialRow("ESP Cơ bản", "3.76"),
-                const Divider(color: Colors.black54, thickness: 0.3),
-                _buildFinancialRow("ESP pha loãng", "3.76"),
-                const Divider(color: Colors.black54, thickness: 0.3),
-                _buildFinancialRow("Tỷ lệ % room NN", "0.00"),
-                const Divider(color: Colors.black54, thickness: 0.3),
-                _buildFinancialRow("Giá trị sổ sách", "18.69"),
-                const Divider(color: Colors.black54, thickness: 0.3),
-              ],
-            ),
+          BlocBuilder<FinancialIndexBloc, FinancialIndexState>(
+            builder: (context, state) {
+              if (state is FinancialIndexLoading) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (state is FinancialIndexFailure) {
+                return Center(
+                  child: Text("Lỗi khi tải dữ liệu"),
+                );
+              } else if (state is FinancialIndexSuccess) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Chỉ số tài chính",
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      _buildFinancialRow("P/E", "${state.response.pe?.toStringAsFixed(3)}"),
+                      const Divider(color: Colors.black54, thickness: 0.3),
+                      _buildFinancialRow("P/B", "${state.response.pb?.toStringAsFixed(3)}"),
+                      const Divider(color: Colors.black54, thickness: 0.3),
+                      _buildFinancialRow("Vốn hóa", "${state.response.marketCap! / 1000000000000} Tỷ"),
+                      const Divider(color: Colors.black54, thickness: 0.3),
+                      _buildFinancialRow("ESP Cơ bản", "${(state.response.eps! / 1000)?.toStringAsFixed(3)}"),
+                      const Divider(color: Colors.black54, thickness: 0.3),
+                      _buildFinancialRow("ESP pha loãng", "${(state.response.epsDiluted! / 1000)?.toStringAsFixed(3)}"),
+                      const Divider(color: Colors.black54, thickness: 0.3),
+                      _buildFinancialRow("Tỷ lệ % room NN", "${state.response.foreignTotalRoom}"),
+                      const Divider(color: Colors.black54, thickness: 0.3),
+                      _buildFinancialRow("Giá trị sổ sách", "${state.response.bookValue?.toStringAsFixed(3)}"),
+                      const Divider(color: Colors.black54, thickness: 0.3),
+                    ],
+                  ),
+                );
+              }
+              return const Center(child: Text("Unknown state"));
+            },
           ),
           // Ownership Structure
           Padding(
@@ -139,8 +156,6 @@ class _CompanyOverviewScreenState extends State<CompanyOverviewScreen> {
                   builder: (context, ownershipState) {
                     if (ownershipState is CompanyOwnershipLoading) {
                       return const Center(child: CircularProgressIndicator());
-                    } else if (ownershipState is CompanyOwnershipError) {
-                      return Center(child: Text("Error: ${ownershipState.message}"));
                     } else if (ownershipState is CompanyOwnershipSuccess) {
                       return SizedBox(
                         width: MediaQuery.of(context).size.width * 0.9,

@@ -1,9 +1,11 @@
 import 'package:hive/hive.dart';
 import 'package:my_app/src/models/company/response/ownership_response.dart';
+import 'package:my_app/src/models/company/response/page_company_response.dart';
 import 'package:my_app/src/services/company_service.dart';
 
 import '../models/company/response/company_leadership_response.dart';
 import '../models/company/response/company_overview_response.dart';
+import '../models/general/get_page_request.dart';
 
 class CompanyRepository {
   final CompanyService service;
@@ -58,6 +60,24 @@ class CompanyRepository {
   Future<List<CompanyLeadershipResponse>> getCompanyLeadership(String companyId) async {
     final response = await service.getCompanyLeadership(companyId);
     return response;
+  }
+
+  Future<List<CompanyDetailResponse>> searchCompany(String query) async {
+    try {
+      final response = await service.searchCompany(query);
+      return response;
+    } catch (e) {
+      throw Exception("Failed to load company search data: $e");
+    }
+  }
+
+  Future<List<PageCompanyResponse>> getPageSizeCompany(GetPageRequest request) async {
+    try {
+      final response = await service.getPageSizeCompany(request);
+      return response;
+    } catch (e) {
+      throw Exception("Failed to load page size company data: $e");
+    }
   }
 
   Future<void> clearCache(String symbol) async {

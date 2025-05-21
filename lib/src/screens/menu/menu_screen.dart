@@ -1,14 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_app/src/blocs/auth/auth_bloc.dart';
+import 'package:my_app/src/blocs/auth/auth/auth_bloc.dart';
+import 'package:my_app/src/blocs/auth/user_info/user_info_bloc.dart' as user_info;
 import 'package:my_app/src/screens/tools/business_analytics_report_screen.dart';
+import 'package:my_app/src/screens/tools/filter_stock_price_screen.dart';
+import 'package:my_app/src/screens/tools/technical_analysis_screen.dart';
 
 import '../../widgets/profile/profile_widget.dart';
 import '../login/login_screen.dart';
 
-class MenuScreen extends StatelessWidget {
+class MenuScreen extends StatefulWidget {
   const MenuScreen({super.key});
 
+  @override
+  State<MenuScreen> createState() => _MenuScreenState();
+}
+
+class _MenuScreenState extends State<MenuScreen> {
+  
+  @override
+  void initState() {
+    super.initState();
+    context.read<user_info.UserInfoBloc>().add(user_info.UserInfoRequested());
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +43,34 @@ class MenuScreen extends StatelessWidget {
       ),
       body: ListView(
         children: [
-          ProfileWidget(),
+          BlocBuilder<user_info.UserInfoBloc, user_info.UserInfoState>(
+  builder: (context, state) {
+    if(state is user_info.UserInfoLoading){
+      return const Center(
+        child: CircularProgressIndicator(
+          value: 0.5,
+          color: Colors.blue,
+        ),
+      );
+    }
+    if(state is user_info.UserInfoError){
+      return Center(
+        child: Text(
+          state.message,
+          style: TextStyle(color: Colors.red),
+        ),
+      );
+    }
+    else if(state is user_info.UserInfoSuccess){
+      return ProfileWidget(
+        userInfoResponse: state.userInfoResponse,
+      );
+    }
+    return const Center(
+      child: Text("Không có dữ liệu"),
+    );
+  },
+),
           Container(
             padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
             child: Column(
@@ -42,30 +84,40 @@ class MenuScreen extends StatelessWidget {
                     fontSize: 16,
                   ),
                 ),
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: 5),
-                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    color: Colors.blue[50],
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Text(
-                    "Phân tích kỹ thuật",
-                    style: TextStyle(fontStyle: FontStyle.italic),
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => TechnicalAnalysisScreen()));
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(vertical: 5),
+                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                      color: Colors.blue[50],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      "Phân tích kỹ thuật",
+                      style: TextStyle(fontStyle: FontStyle.italic),
+                    ),
                   ),
                 ),
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: 5),
-                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    color: Colors.blue[50],
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Text(
-                    "Lọc cổ phiếu theo giá",
-                    style: TextStyle(fontStyle: FontStyle.italic),
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => FilterStockPriceScreen()));
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(vertical: 5),
+                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                      color: Colors.blue[50],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      "Lọc cổ phiếu theo giá",
+                      style: TextStyle(fontStyle: FontStyle.italic),
+                    ),
                   ),
                 ),
                 InkWell(

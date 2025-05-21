@@ -7,22 +7,22 @@ part 'top_company_floor_response.g.dart';
 @JsonSerializable()
 class TopCompanyFloorResponse {
   @HiveField(0)
-  @JsonKey(name: 'Symbol')
+  @JsonKey(name: 'symbol')
   final String symbol;
 
   @HiveField(1)
-  @JsonKey(name: 'CeilPrice')
+  @JsonKey(name: 'ceiling_price')
   final double ceilPrice;
 
   @HiveField(2)
-  @JsonKey(name: 'FloorPrice')
+  @JsonKey(name: 'floor_price')
   final double floorPrice;
 
   @HiveField(3)
-  @JsonKey(name: 'Volume')
+  @JsonKey(name: 'accumulated_vol')
   final int volume;
   @HiveField(4)
-  @JsonKey(name: 'CompanyName')
+  @JsonKey(name: 'company_name')
   final String companyName;
 
   TopCompanyFloorResponse({

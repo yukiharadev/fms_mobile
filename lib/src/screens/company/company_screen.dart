@@ -89,15 +89,12 @@ class _CompanyScreenState extends State<CompanyScreen> {
           builder: (context, state) {
             return TabBarView(
               children: [
-                // Tab 1: Tổng quan
                 _buildOverviewTab(state),
-                // Tab 2: Tài chính
-                const CompanyFinanceScreen(),
-                // Tab 3: Lãnh đạo
+                CompanyFinanceScreen(
+                  symbol: widget.symbol,
+                ),
                 _buildLeadTab(state),
-                // Tab 4: Công ty con & Liên kết
                 const CompanyRelationScreen(),
-                // Tab 5: Báo cáo tài chính
                 CompanyFinanceReportScreen(
                   symbol: widget.symbol,
                 ),
@@ -113,7 +110,7 @@ class _CompanyScreenState extends State<CompanyScreen> {
     if (state is CompanyOverviewLoading) {
       return const Center(child: CircularProgressIndicator());
     } else if (state is CompanyOverviewError) {
-      return Center(child: Text("Error: ${state.message}"));
+      return Center(child: Text("Không có dữ liệu"));
     } else if (state is CompanyOverviewSuccess) {
       return CompanyOverviewScreen(
         symbol: widget.symbol,

@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_app/src/models/follow/user_suggest_response.dart';
 import 'package:my_app/src/widgets/follow/table_follow_widget.dart';
 import '../../models/follow/user_follow_response.dart';
 
-class FollowScreen extends StatelessWidget {
+class FollowScreen extends StatefulWidget {
   FollowScreen({super.key});
 
+  @override
+  State<FollowScreen> createState() => _FollowScreenState();
+}
+
+class _FollowScreenState extends State<FollowScreen> {
   final List<UserFollowResponse> testFollowList = [
     UserFollowResponse(
       symbol: "ACB",
@@ -21,6 +27,11 @@ class FollowScreen extends StatelessWidget {
     ),
     UserFollowResponse(companyName: "Công Ty cổ phần VCB", symbol: "VCB"),
   ];
+  @override
+  void initState() {
+    super.initState();
+    // You can add any initialization logic here if needed
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,6 +119,11 @@ class _SuggestListItemState extends State<SuggestListItem> {
       analysticCount: 28900,
     ),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
