@@ -7,21 +7,27 @@ import 'package:my_app/src/blocs/company/company_ownership/company_ownership_blo
 import 'package:my_app/src/blocs/company/search_company/search_company_bloc.dart';
 import 'package:my_app/src/blocs/financial/financial_index/financial_index_bloc.dart';
 import 'package:my_app/src/blocs/financial/financial_report/financial_report_bloc.dart';
+import 'package:my_app/src/blocs/market/market_chart_bloc.dart';
 import 'package:my_app/src/blocs/tools/analytics/business_analytics_bloc.dart';
 import 'package:my_app/src/repositories/auth_repository.dart';
 import 'package:my_app/src/repositories/company_repository.dart';
 import 'package:my_app/src/repositories/financial_report_repository.dart';
+import 'package:my_app/src/repositories/person_repository.dart';
 import 'package:my_app/src/repositories/third_party_repository.dart';
 import 'package:my_app/src/repositories/top_company_repository.dart';
 import 'package:my_app/src/services/business_analytics_service.dart';
 import 'package:my_app/src/services/company_service.dart';
 import 'package:my_app/src/services/dio_client.dart';
 import 'package:my_app/src/services/financial_report_service.dart';
+import 'package:my_app/src/services/market_chart_service.dart';
+import 'package:my_app/src/services/person_service.dart';
 import 'package:my_app/src/services/third_party_service.dart';
 import 'package:my_app/src/services/top_company_service.dart';
 import 'package:my_app/src/services/user_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../blocs/ceo/info/person_info_bloc.dart';
+import '../blocs/ceo/work/get_work_bloc.dart';
 import '../blocs/company/all_company/all_company_bloc.dart';
 import '../blocs/company/company_cash_stock/company_cash_stock_bloc.dart';
 import '../blocs/company/company_leadership/company_leadership_bloc.dart';
@@ -31,6 +37,7 @@ import '../blocs/financial/financial_field/financial_field_report_bloc.dart';
 import '../blocs/home/top_company/top_company_bloc.dart';
 import '../repositories/business_analytics_repository.dart';
 import '../repositories/file_repository.dart';
+import '../repositories/market_chart_repository.dart';
 import '../services/file_service.dart';
 
 final getIt = GetIt.instance;
@@ -56,6 +63,17 @@ void registerServices() {
   getIt.registerSingleton<ThirdPartyService>(
     ThirdPartyService(
       dio: getIt<Dio>(),
+    ),
+  );
+  getIt.registerSingleton<MarketChartService>(
+    MarketChartService(
+      dio: getIt<Dio>(),
+    ),
+  );
+
+  getIt.registerSingleton<PersonService>(
+    PersonService(
+      dioClient: getIt<DioClient>(),
     ),
   );
 }
@@ -93,6 +111,14 @@ void registerRepositories() {
       service: getIt<ThirdPartyService>(),
     ),
   );
+
+  getIt.registerSingleton<MarketChartRepository>(
+    MarketChartRepository(
+      marketChartService: getIt<MarketChartService>(),
+    ),
+  );
+
+  getIt.registerSingleton<PersonRepository>(PersonRepository(service: getIt<PersonService>()));
 }
 
 void registerBlocs() {
@@ -166,8 +192,24 @@ void registerBlocs() {
     ),
   );
   getIt.registerCachedFactory<UserInfoBloc>(
-      () => UserInfoBloc(
-            repository: getIt<AuthRepository>(),
-      ),
+    () => UserInfoBloc(
+      repository: getIt<AuthRepository>(),
+    ),
+  );
+
+  getIt.registerCachedFactory<MarketChartBloc>(
+    () => MarketChartBloc(
+      marketChartRepository: getIt<MarketChartRepository>(),
+    ),
+  );
+  getIt.registerCachedFactory<PersonInfoBloc>(
+    () => PersonInfoBloc(
+      repository: getIt<PersonRepository>(),
+    ),
+  );
+  getIt.registerCachedFactory<GetWorkBloc>(
+    () => GetWorkBloc(
+      repository: getIt<PersonRepository>(),
+    ),
   );
 }

@@ -6,8 +6,7 @@ part of 'user_info_response.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-UserInfoResponse _$UserInfoResponseFromJson(Map<String, dynamic> json) =>
-    UserInfoResponse(
+UserInfoResponse _$UserInfoResponseFromJson(Map<String, dynamic> json) => UserInfoResponse(
       id: json['id'] as String,
       userId: json['userId'] as String,
       fullName: json['fullName'] as String,
@@ -16,8 +15,7 @@ UserInfoResponse _$UserInfoResponseFromJson(Map<String, dynamic> json) =>
       gender: json['gender'] as String,
     );
 
-Map<String, dynamic> _$UserInfoResponseToJson(UserInfoResponse instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$UserInfoResponseToJson(UserInfoResponse instance) => <String, dynamic>{
       'id': instance.id,
       'userId': instance.userId,
       'fullName': instance.fullName,

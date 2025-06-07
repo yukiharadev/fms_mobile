@@ -22,7 +22,6 @@ class UserService {
   }
 
   Future<UserInfoResponse> getUserInfo() async {
-
     final response = await dioClient.dio.get(
       '/auth-service/userinfo',
     );

@@ -97,7 +97,7 @@ class LeadershipItemWidget extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => LeadershipScreen(
-                      personId: e.id,
+                      personId: e.personId,
                       leaderName: e.name,
                     ),
                   ),

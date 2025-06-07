@@ -19,7 +19,7 @@ class TableCompanyWidget extends StatelessWidget {
           3: FixedColumnWidth(MediaQuery.of(context).size.width * 0.2),
         },
         children: [
-          _buildTableRow(['STT', 'Mã CK', 'KL Mua ròng', 'Giá'], isHeader: true, context: context),
+          _buildTableRow(['STT', 'Mã CK', 'KL CP', 'Giá'], isHeader: true, context: context),
           ...companies.asMap().entries.map((entry) {
             int index = entry.key + 1;
             final company = entry.value;

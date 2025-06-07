@@ -6,8 +6,7 @@ part of 'top_company_floor_response.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class TopCompanyFloorResponseAdapter
-    extends TypeAdapter<TopCompanyFloorResponse> {
+class TopCompanyFloorResponseAdapter extends TypeAdapter<TopCompanyFloorResponse> {
   @override
   final int typeId = 0;
 
@@ -46,20 +45,14 @@ class TopCompanyFloorResponseAdapter
   int get hashCode => typeId.hashCode;
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is TopCompanyFloorResponseAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+  bool operator ==(Object other) => identical(this, other) || other is TopCompanyFloorResponseAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
 }
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-TopCompanyFloorResponse _$TopCompanyFloorResponseFromJson(
-        Map<String, dynamic> json) =>
-    TopCompanyFloorResponse(
+TopCompanyFloorResponse _$TopCompanyFloorResponseFromJson(Map<String, dynamic> json) => TopCompanyFloorResponse(
       symbol: json['symbol'] as String,
       ceilPrice: (json['ceiling_price'] as num).toDouble(),
       floorPrice: (json['floor_price'] as num).toDouble(),
@@ -67,9 +60,7 @@ TopCompanyFloorResponse _$TopCompanyFloorResponseFromJson(
       companyName: json['company_name'] as String,
     );
 
-Map<String, dynamic> _$TopCompanyFloorResponseToJson(
-        TopCompanyFloorResponse instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$TopCompanyFloorResponseToJson(TopCompanyFloorResponse instance) => <String, dynamic>{
       'symbol': instance.symbol,
       'ceiling_price': instance.ceilPrice,
       'floor_price': instance.floorPrice,

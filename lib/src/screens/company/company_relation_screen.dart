@@ -5,16 +5,11 @@ class CompanyRelationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        Column(
-          children: [
-            RelationItemWidget(),
-            RelationItemWidget(),
-            RelationItemWidget(),
-          ],
-        ),
-      ],
+    return Center(
+      child: Text(
+        "Dữ liệu quan hệ công ty chưa được cập nhật",
+        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black54),
+      ),
     );
   }
 }

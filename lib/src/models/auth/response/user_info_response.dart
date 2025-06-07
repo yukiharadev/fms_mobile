@@ -2,7 +2,6 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'user_info_response.g.dart';
 
-
 @JsonSerializable()
 class UserInfoResponse {
   @JsonKey(name: "id")
@@ -18,14 +17,7 @@ class UserInfoResponse {
   @JsonKey(name: "gender")
   final String gender;
 
-  UserInfoResponse({
-    required this.id,
-    required this.userId,
-    required this.fullName,
-    required this.avatarUrl,
-    required this.birthDay,
-    required this.gender
-  });
+  UserInfoResponse({required this.id, required this.userId, required this.fullName, required this.avatarUrl, required this.birthDay, required this.gender});
 
   factory UserInfoResponse.fromJson(Map<String, dynamic> json) => _$UserInfoResponseFromJson(json);
   Map<String, dynamic> toJson() => _$UserInfoResponseToJson(this);

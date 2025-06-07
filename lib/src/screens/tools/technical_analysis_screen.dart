@@ -4,6 +4,8 @@ import 'package:my_app/src/blocs/company/all_company/all_company_bloc.dart';
 import 'package:my_app/src/models/company/response/page_company_response.dart';
 import 'package:my_app/src/models/general/get_page_request.dart';
 
+import '../market_chart/market_chart_screen.dart';
+
 class TechnicalAnalysisScreen extends StatefulWidget {
   const TechnicalAnalysisScreen({super.key});
 
@@ -80,7 +82,7 @@ class _TechnicalAnalysisScreenState extends State<TechnicalAnalysisScreen> {
                         },
                         child: Icon(Icons.arrow_back_ios_new, size: 20),
                       ),
-                      Text("${(pageIndex + 1)*30}", style: TextStyle(fontSize: 16)),
+                      Text("${(pageIndex + 1) * 30}", style: TextStyle(fontSize: 16)),
                       InkWell(
                         onTap: () {
                           setState(() {
@@ -153,7 +155,11 @@ class CompanyPageRowWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: (){},
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => MarketChartScreen(symbol: response.symbol),
+        ));
+      },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -166,9 +172,11 @@ class CompanyPageRowWidget extends StatelessWidget {
                 right: BorderSide(color: Colors.black, width: 1, style: BorderStyle.solid),
                 bottom: BorderSide(color: Colors.black, width: 1, style: BorderStyle.solid),
               )),
-              child: Text(response.symbol, style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
+              child: Text(
+                response.symbol,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
                 textAlign: TextAlign.start,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,

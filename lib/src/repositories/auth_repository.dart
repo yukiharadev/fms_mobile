@@ -48,7 +48,6 @@ class AuthRepository {
   }
 
   Future<UserInfoResponse> getUserInfo() async {
-
     final response = await userService.getUserInfo();
     return response;
   }
